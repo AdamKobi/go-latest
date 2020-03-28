@@ -3,11 +3,13 @@ package latest
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strings"
 
 	"github.com/google/go-github/github"
 	"github.com/hashicorp/go-version"
+	"golang.org/x/oauth2"
 )
 
 // FixVersionStrFunc is function to fix version string
@@ -91,7 +93,14 @@ func DeleteFrontV() FixVersionStrFunc {
 }
 
 func (g *GithubTag) newClient() *github.Client {
-	client := github.NewClient(nil)
+	var tc *http.Client
+	if g.Token != "" {
+		ctx := context.Background()
+		ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: g.Token})
+		tc = oauth2.NewClient(ctx, ts)
+	}
+	fmt.Println(tc)
+	client := github.NewClient(tc)
 	if g.URL != "" {
 		client.BaseURL, _ = url.Parse(g.URL)
 	}
