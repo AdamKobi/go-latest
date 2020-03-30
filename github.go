@@ -99,7 +99,6 @@ func (g *GithubTag) newClient() *github.Client {
 		ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: g.Token})
 		tc = oauth2.NewClient(ctx, ts)
 	}
-	fmt.Println(tc)
 	client := github.NewClient(tc)
 	if g.URL != "" {
 		client.BaseURL, _ = url.Parse(g.URL)
